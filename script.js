@@ -148,8 +148,8 @@ class PersonCl {
   }
 }
 
-const jessica = new PersonCl('Jessica', 1996);
-console.log(jessica);  // Will alert jessica is not a full name
+const jessica = new PersonCl('Jessica Sam', 1996);
+console.log(jessica); // Will alert jessica is not a full name
 
 jessica.calAge();
 console.log(jessica.__proto__ === PersonCl.prototype);
@@ -369,12 +369,89 @@ StudentProto.init = function (firstName, birthYear, course) {
   PersonProto.init.call(this, firstName, birthYear);
   this.course = course;
 };
-StudentProto.introduce = function(){
+StudentProto.introduce = function () {
   console.log(`My name is ${this.firstName} and I study ${this.course} `);
-}
+};
 const jay = Object.create(StudentProto);
 
 jay.init('Jay', 2002, 'Computer Science');
 jay.introduce();
 jay.calAge();
 
+//Challenge 4
+/*
+Your tasks:
+1. Re-createChallenge#3,butthistimeusingES6classes:createan'EVCl' child class of the 'CarCl' class
+2. Makethe'charge'propertyprivate
+3. Implementtheabilitytochainthe'accelerate'and'chargeBattery'
+methods of this class, and also update the 'brake' method in the 'CarCl' class. Then experiment with chaining!
+Test data:
+§ Data car 1: 'Rivian' going at 120 km/h, with a charge of 23% .
+*/
+
+
+//Other thingsabout classes
+//adding properties that are not appearing in parameters
+
+     //public fields
+    //Private fields
+    //Public Methods
+    //Public Methods
+    // there is also the static versions
+class Account {
+  //Public fields
+  locale = navigator.language;
+  _movements = [];
+
+  //private fields
+  #movements = []
+  #pin;  // this will be set to undefined but reset with this.#pin
+
+  constructor(owner, currency, pin) {
+    this.owner = owner;
+    this.currency = currency;
+
+    //Protected property
+    this.#pin = pin;
+    this.#movements = [];
+    this.locale = navigator.language;
+  }
+  //Public interface(Methods) they can access them but cannot manipulate them
+  // Public interface
+  deposit(val) {
+    this.#movements.push(val);
+  }
+
+  withdraw(val) {
+    this.deposit(-val);
+  }
+  // Private methods
+  // #approveLoan() {  not yet in place 
+  _approveLoan() {
+    return true;
+  }
+
+  requestLoan(val) {
+    // if (this.//#endregionapproveLoan(val)) {
+    if (this._approveLoan(val)) {
+      this.deposit(val);
+      console.log(`Loan approved`);
+    }
+  }
+};
+
+   
+const acc1 = new Account('Jonas', 'Eur', 111);
+
+
+acc1.deposit(250);
+acc1.withdraw(140);
+acc1.requestLoan(10000)
+
+console.log(acc1);
+console.log(acc1.pin); // undefined
+
+//movements updated. but best to use API- PUBLIC INTERFACE OF THE OBJECTS:function in the parent object
+
+// acc1._movements.push(250);
+// acc1._movements.push(-50)
