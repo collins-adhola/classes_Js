@@ -113,8 +113,8 @@ BMW.accelarate();
 
 //Class declarations
 class PersonCl {
-  constructor(firstName, birthYear) {
-    this.firstName = firstName;
+  constructor(fullName, birthYear) {
+    this.fullName = fullName;
     this.birthYear = birthYear;
   }
 
@@ -123,8 +123,14 @@ class PersonCl {
     console.log(2007 - this.birthYear);
   }
 
-  //Set a property that already exist
+  greet() {
+    console.log(`Hey ${this.fullName}`);
+  }
 
+  //Set a property that already exist
+  get age() {
+    console.log(2037 - this.birthYear);
+  }
   set fullName(name) {
     console.log(name);
     if (name.includes(' ')) this._fullName = name;
@@ -133,21 +139,17 @@ class PersonCl {
   }
 
   get fullName() {
-    return this._firstName; // returns _firstName to firstName
-  };
-
-  //Static method
-  static hey(){
-    console.log('Hey there!');
+    return this._firsttName; // returns _firstName to firstName
   }
 
- 
+  //Static method
+  static hey() {
+    console.log('Hey there!');
+  }
 }
 
-
-
 const jessica = new PersonCl('Jessica', 1996);
-console.log(jessica);
+console.log(jessica);  // Will alert jessica is not a full name
 
 jessica.calAge();
 console.log(jessica.__proto__ === PersonCl.prototype);
@@ -155,25 +157,23 @@ console.log(jessica.__proto__ === PersonCl.prototype);
 PersonCl.prototype.greet = function () {
   console.log('Hi there!!!');
 };
-jessica.greet();
+// jessica.greet();
 
-const walter = new PersonCl('walter', 1987);
+const walter = new PersonCl('walter white', 1987);
 
-console.log(walter)// returns no name and the alert because of setter.Inspecting object will show no name but 'walter white' will return true for _fullName
-walter.fullname // return walter because of the getter.
- 
-
-
+console.log(walter); // returns no name and the alert because of setter.Inspecting object will show no name but 'walter white' will return true for _fullName
+walter.fullname; // return walter because of the getter.
 
 //static prototype
 const PersonProto = {
-  calAge(){
+  calAge() {
     console.log(2037 - this.birthYear);
   },
-  init(firstName, birthYear){
-    this.firstName= firstName;
+
+  init(firstName, birthYear) {
+    this.firstName = firstName;
     this.birthYear = birthYear;
-  }
+  },
 };
 
 //static
@@ -190,17 +190,9 @@ const sarah = Object.create(PersonProto);
 sarah.init('Sarah5', 1988);
 sarah.calAge();
 
-
-
-
-
-
 //1.Classes are NOT hoisted so must be used after declaration unlike functions.
 //2. Class are first class citizens so you can pass in functions or return then as functuins.
 //3. Classes are executed in STRICT MODE whether you have declared it or not.
-
-
-
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 /*
@@ -227,31 +219,26 @@ class CarCl {
     this.speed = speed;
   }
   accelarate() {
-  this.speed += 10;
-  console.log(` ${this.make} is going at ${this.speed} km/hr`);
-  };
+    this.speed += 10;
+    console.log(` ${this.make} is going at ${this.speed} km/hr`);
+  }
 
   brake() {
-  this.speed -= 5;
-  console.log(` ${this.make} is going at ${this.speed} km/hr`);
-  };
-
-  get speedUs(){
-    console.log(this.speed / 1.6)
+    this.speed -= 5;
+    console.log(` ${this.make} is going at ${this.speed} km/hr`);
   }
 
-  set speedUs(speed){
+  get speedUs() {
+    console.log(this.speed / 1.6);
+  }
+
+  set speedUs(speed) {
     this.speed = speed * 1.6;
   }
-};
+}
 
-
-
-
-
-const ford = new CarCl('ford',120);
+const ford = new CarCl('ford', 120);
 console.log(ford);
-
 
 ford.accelarate();
 ford.accelarate();
@@ -260,5 +247,134 @@ ford.brake();
 ford.accelarate();
 ford.accelarate();
 ford.speedUs;
-CarCl.speedUs=30;
-console.log(ford)
+CarCl.speedUs = 30;
+console.log(ford);
+
+// Inheritance between classes
+
+/*
+function Person(firstName, birthYear) {
+  this.firstName = firstName;
+  this.birthYear = birthYear;
+}
+Person.prototype.calcAge = function () {
+  console.log(2037 - this.birthYear);
+};
+*/
+
+const Student = function (firstName, birthYear, course) {
+  Person.call(this, firstName, birthYear);
+  this.course = course;
+};
+
+//Linking the classes
+Student.prototype = Object.create(Person.prototype);
+
+Student.prototype.introduce = function () {
+  console.log(`My name is ${this.firstName} and I am studying ${this.course}`);
+};
+
+Student.prototype.constructor = 'Student'; //Object create pointed constructor to Person onstead of Student
+console.log(Student.prototype);
+
+const mike = new Student('mike', 2002, 'Computer Science');
+mike.introduce();
+mike.calcAge();
+/*
+Coding Challenge #3
+Your tasks:
+1. Use a constructor functiontoimplementanElectricCar(called'EV')asachild "class" of 'Car'. Besides a make and current speed, the 'EV' also has the current battery charge in % ('charge' property)
+2. Implementa'chargeBattery'methodwhichtakesanargument 'chargeTo' and sets the battery charge to 'chargeTo'
+3. Implementan'accelerate'methodthatwillincreasethecar'sspeedby20, and decrease the charge by 1%. Then log a message like this: 'Tesla going at 140 km/h, with a charge of 22%'
+4. Createanelectriccarobjectandexperimentwithcalling'accelerate', 'brake' and 'chargeBattery' (charge to 90%). Notice what happens when you 'accelerate'! Hint: Review the definiton of polymorphism 😉
+Test data:
+§ Data car 1: 'Tesla' going at 120 km/h, with a charge of 23% GOOD LUCK 😀
+*/
+
+const Car = function (make, speed) {
+  this.make = make;
+  this.speed = speed;
+};
+
+const EV = function (make, speed, charge) {
+  Car.call(this, make, speed);
+  this.charge = charge;
+};
+
+// Link the prototype
+EV.prototype = Object.create(Car.prototype);
+
+EV.prototype.chargeBattery = function (chargeTo) {
+  this.charge = chargeTo;
+};
+
+EV.prototype.accelerate = function () {
+  this.speed += 20;
+  this.charge--;
+  console.log(
+    `Tesla going at ${this.speed} km/h, with a charge of ${this.charge}%`
+  );
+};
+
+const tesla = new EV('Tesla', 120, 23);
+
+// tesla.accelerate();
+tesla.chargeBattery(90);
+console.log(tesla);
+tesla.accelerate();
+tesla.accelerate();
+tesla.accelerate();
+
+//  ES6 Inheritance
+//Using PersonCl
+class StudentCl extends PersonCl {
+  constructor(fullName, birthYear, course) {
+    super(fullName, birthYear);
+    this.course = course;
+  }
+
+  introduce() {
+    console.log(`My name is ${this._fullName} and I study ${this.course} `);
+  }
+  calcAge() {
+    console.log(
+      `I'm ${this.birthYear} but as a student I feel ${this.birthYear + 10} `
+    );
+  }
+}
+
+const martha = new StudentCl('Martha Jones', 2012, 'Computer Science');
+
+martha.introduce();
+
+//Inheritance :Object.create
+//using Personproto above
+/*
+const PersonProto = {
+  calAge(){
+    console.log(2037 - this.birthYear);
+  },
+  init(firstName, birthYear){
+    this.firstName= firstName;
+    this.birthYear = birthYear;
+  }
+};
+ */
+
+const Steven = Object.create(PersonProto);
+
+const StudentProto = Object.create(PersonProto);
+
+StudentProto.init = function (firstName, birthYear, course) {
+  PersonProto.init.call(this, firstName, birthYear);
+  this.course = course;
+};
+StudentProto.introduce = function(){
+  console.log(`My name is ${this.firstName} and I study ${this.course} `);
+}
+const jay = Object.create(StudentProto);
+
+jay.init('Jay', 2002, 'Computer Science');
+jay.introduce();
+jay.calAge();
+
