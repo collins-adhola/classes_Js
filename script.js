@@ -418,12 +418,17 @@ class Account {
   }
   //Public interface(Methods) they can access them but cannot manipulate them
   // Public interface
+  getmovements(){
+    return this.#movements
+  }
   deposit(val) {
     this.#movements.push(val);
+    return this;  // so chainin doesnt return undefined. bcause no value explicitly ststed here.
   }
 
   withdraw(val) {
     this.deposit(-val);
+    return this; 
   }
   // Private methods
   // #approveLoan() {  not yet in place 
@@ -436,6 +441,7 @@ class Account {
     if (this._approveLoan(val)) {
       this.deposit(val);
       console.log(`Loan approved`);
+      return this; 
     }
   }
 };
@@ -451,7 +457,62 @@ acc1.requestLoan(10000)
 console.log(acc1);
 console.log(acc1.pin); // undefined
 
+//Chaining 
+acc1.deposit(300).deposit(500).withdraw(35).requestLoan(10000).withdraw(500);
+console.log(acc1.getmovements())
+
 //movements updated. but best to use API- PUBLIC INTERFACE OF THE OBJECTS:function in the parent object
 
 // acc1._movements.push(250);
 // acc1._movements.push(-50)
+/*
+
+
+Your tasks:
+1. Re-create Challenge#3,butthistimeusingES6classes:create an'EVCl' child class of the 'CarCl' class
+2. Makethe'charge'propertyprivate
+3. Implementtheabilitytochainthe'accelerate'and'chargeBattery'
+methods of this class, and also update the 'brake' method in the 'CarCl' class. Then experiment with chaining!
+Test data:
+§ Data car 1: 'Rivian' going at 120 km/h, with a charge of 23% GOOD LUCK 😀
+
+*/
+
+
+class EVCL extends CarCl {
+  #charge;
+
+
+  constructor(make, speed, charge) {
+    super(make, speed)
+    this.#charge = charge;
+  };
+  chargeBattery(chargeTo){  // enable to access property from outside.
+    this.#charge = chargeTo;
+    return this;
+  };
+  
+
+  accelarate() {
+    this.speed += 20;
+    this.#charge--;
+
+    console.log(` ${this.make} is going at ${this.speed} km/hr with a charge of ${this.#charge}`);
+    return this;
+  };
+
+  brake() {
+    this.speed -= 5;
+    console.log(` ${this.make} is going at ${this.speed} km/hr`);
+    return this;
+  }; 
+};
+
+
+
+
+const Rivian = new EVCL('Rivian', 120, 23);
+console.log(Rivian);
+
+
+Rivian.accelarate().accelarate().accelarate().brake().chargeBattery();
